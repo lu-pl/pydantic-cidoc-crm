@@ -19,6 +19,7 @@ Also some general cleanup is provided.
 	All model field types use union types like `List[<type>] | <type>`; this allows multiple predicate assignment (which otherwise wouldn't be possible with argument initialization in a model, since keyword arguments obviously mustn't repeat); `Iterable` imo is a more general (i.e. better) choice here.
 	
 * Merged `AbstractBaseModel` and `RDFBaseModel` and moved to `rdfbasemodel` module
+
     Separation of `AbstractBaseModel` and `RDFBaseModel` seems somewhat motiveless; also I find having `mapping` assigned right in the base class is more concise.
 
 ## License
