@@ -1,6 +1,7 @@
 """ Pydantic-based Python implementation of CIDOC-CRM"""
 
-# deprecated since python 3.10; deferred type eval (is|should be) default now
+# deprecated since python 3.10?; deferred type eval (is|should be) default now
+# For this and 'update_forward_refs' (end of this file) see: https://docs.pydantic.dev/latest/usage/postponed_annotations/
 from __future__ import annotations
 
 from typing import List, Optional, Union
