@@ -19,7 +19,7 @@ Also some general cleanup is provided.
 	
 * Simplified `_convert_to_rdf_literl`
 
-    Actually rdflib.Literal handles conversions and datatype assignment well by itself.
+    Actually `rdflib.Literal` handles conversions and datatype assignment well by itself.
 	
 * Changed `List` to `Iterable` type in all model field types
 
