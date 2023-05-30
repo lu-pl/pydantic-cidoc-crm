@@ -1,0 +1,26 @@
+@prefix cls: <https://clscor.io/ontologies/CRMcls/> .
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://types.clscor.io/entity/corpus_name> a crm:E55_Type ;
+    rdfs:label "Corpus Name" ;
+    crm:P2i_is_type_of <https://eltec.clscor.io/entity/corpus/corpus_name> .
+
+<https://types.clscor.io/entity/id> a crm:E55_Type ;
+    rdfs:label "ID" ;
+    crm:P2i_is_type_of <https://eltec.clscor.io/entity/corpus/id> .
+
+<https://eltec.clscor.io/entity/corpus> a cls:X1_Corpus ;
+    rdfs:label "English ELTeC Corpus" ;
+    crm:P1_is_identified_by <https://eltec.clscor.io/entity/corpus/corpus_name>,
+        <https://eltec.clscor.io/entity/corpus/id> .
+
+<https://eltec.clscor.io/entity/corpus/corpus_name> a crm:E41_Appellation ;
+    crm:P190_has_symbolic_content "English ELTeC Corpus" ;
+    crm:P1i_identifies <https://eltec.clscor.io/entity/corpus> ;
+    crm:P2_has_type <https://types.clscor.io/entity/corpus_name> .
+
+<https://eltec.clscor.io/entity/corpus/id> a crm:E42_Identifier ;
+    crm:P190_has_symbolic_content "eltec_en" ;
+    crm:P1i_identifies <https://eltec.clscor.io/entity/corpus> ;
+    crm:P2_has_type <https://types.clscor.io/entity/id> .
