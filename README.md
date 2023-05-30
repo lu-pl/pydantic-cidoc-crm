@@ -11,6 +11,7 @@ Using [Pydantic](https://docs.pydantic.dev/latest/) for Ontology abstractions in
 
 * 
 * Changed List type to Iterable type
+
 All model field types use union types like 'List[<type>] | <type>'; this allows multiple predicate assignment (which otherwise wouldn't be possible with argument initialization in a model, since keyword arguments obviously mustn't repeat); Iterable imo is a more general (i.e. better) choice here.
 
 ## License
