@@ -3,22 +3,37 @@ import datetime
 from typing import Any, Union
 
 from pydantic import BaseModel, Field
-from rdflib import Literal, URIRef
+from rdflib import Literal, URIRef, Graph
 from rdflib.namespace import RDF, XSD
 
 
-class NotInMapping(BaseException):
+class NotInMapping(Exception):
     pass
 
-
-class InvalidType(BaseException):
+class InvalidType(Exception):
     pass
 
 
 class AbstractBaseModel(BaseModel, abc.ABC):
+    """ABC for pydantic Basemodel.
+
+    Basically this defines an ABC for a strictly subtype-validated field type.
+    """
+
     iri: str = Field(exclude=True, allow_mutation=False)
 
     class Config:
+        """BaseModel config.
+
+        See: https://docs.pydantic.dev/latest/usage/model_config/
+
+        Settings:
+        - also validate field default values (validate_all)
+        - also validate on assignment (validate_assignment)
+        - disallow arbitrary (extra) kwargs at init (extra)
+        - allow arbitray user types for fields (arbitrary_types_allowed)
+        """
+
         validate_all = True
         validate_assignment = True
         extra = "forbid"
@@ -26,13 +41,23 @@ class AbstractBaseModel(BaseModel, abc.ABC):
 
     @classmethod
     def __get_validators__(cls):
+        """Yield a validator for field value validation.
+
+        See: https://docs.pydantic.dev/latest/usage/types/#classes-with-__get_validators__
+
+        If the field value is not a subclass of the field type
+        specified in the model, an error is raised.
+        """
+
         def validator(v: Any):
             if isinstance(v, cls):
                 return v
-            raise ValueError(f"Domain must be {cls.__name__} or a subclass of it.")
+            raise ValueError(f"Domain must be '{cls.__name__}' or a subclass of it.")
 
         yield validator
 
+
+    ## actually this whole method is obsolete; rdflib.Literal already handles conversions
     @staticmethod
     def _convert_to_rdf_literal(
         value: Union[URIRef, str, int, float, datetime.date, datetime.datetime]
