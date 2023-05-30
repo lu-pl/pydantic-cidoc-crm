@@ -15,9 +15,9 @@ Also some general cleanup is provided.
 
 * Refactored `RDFBaseModel.to_triples`
 
-    `RDFBaseModel.to_triples` is now a recursive generator. Generated triples are no longer (C-style) appended to a list, but yielded.
+    `RDFBaseModel.to_triples` is now a recursive *generator* i.e. lazy. Generated triples are no longer (C-style) appended to a list, but yielded.
 	
-* `_convert_to_rdf_literl`
+* Simplified `_convert_to_rdf_literl`
 
     Actually rdflib.Literal handles conversions and datatype assignment well by itself.
 	
