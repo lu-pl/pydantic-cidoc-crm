@@ -1,13 +1,11 @@
+""" Pydantic-based Python implementation of CIDOC-CRM"""
+
+# deprecated since python 3.10; deferred type eval (is|should be) default now
 from __future__ import annotations
 
 from typing import List, Optional, Union
-
-from .abstract_basemodel import AbstractBaseModel
-from .mapping import mapping
-
-
-class RDFBaseModel(AbstractBaseModel):
-    _mapping = mapping
+from rdfbasemodel import RDFBaseModel
+from mapping import mapping
 
 
 class E1CRMEntity(RDFBaseModel):

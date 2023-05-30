@@ -1,11 +1,14 @@
+"""Pydantic base model and configuration for RDFBaseModel."""
+
 import abc
 import datetime
 from typing import Any, Union
 
+import mapping
+
 from pydantic import BaseModel, Field
 from rdflib import Literal, URIRef, Graph
 from rdflib.namespace import RDF, XSD
-
 
 class NotInMapping(Exception):
     pass
@@ -14,13 +17,16 @@ class InvalidType(Exception):
     pass
 
 
-class AbstractBaseModel(BaseModel, abc.ABC):
+class RDFBaseModel(BaseModel, abc.ABC):
     """ABC for pydantic Basemodel.
 
     Basically this defines an ABC for a strictly subtype-validated field type.
     """
 
     iri: str = Field(exclude=True, allow_mutation=False)
+    _mapping = mapping.mapping
+
+    _graph = Graph()
 
     class Config:
         """BaseModel config.
