@@ -9,7 +9,7 @@ Using [Pydantic](https://docs.pydantic.dev/latest/) for Ontology abstractions in
 
 However `pydantic-cidoc-crm` doesn't utilize `rdflib`'s power to handle graph generation and serialization, which could be considered a serious and unnecessary limitation.
 
-Also some general cleanup is provided.
+Also some general cleanup and basic testing is provided.
 
 ### Changes
 
