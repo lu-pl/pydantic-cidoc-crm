@@ -15,6 +15,9 @@ However `pydantic-cidoc-crm` doesn't utilize `rdflib`'s functioniality to handle
 
     `RDFBaseModel.to_triples` is now a recursive *generator* i.e. lazy. Generated triples are no longer (C-style) appended to a list, but yielded.
 	
+* Refactored `RDFBaseModel.serialize`
+    `RDFBaseModel.serialize` is now an `rdflib.Graph.serialize` proxy that uses an internal `rdflib.Graph` component; this allows for far more powerful serialization funcitonality (see [rdflib.Graph.serialize](https://rdflib.readthedocs.io/en/stable/apidocs/rdflib.html#rdflib.graph.Graph.serialize)).
+	
 * Simplified `_convert_to_rdf_literl`
 
     Actually `rdflib.Literal` handles conversions and datatype assignment well by itself.
