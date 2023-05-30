@@ -13,10 +13,18 @@ Also some general cleanup is provided.
 
 ### Changes
 
-* 
+* Refactored `RDFBaseModel.to_triples`
+
+    `RDFBaseModel.to_triples` is now a recursive generator. Generated triples are no longer (C-style) appended to a list, but yielded.
+	
+* `_convert_to_rdf_literl`
+
+    Actually rdflib.Literal handles conversions and datatype assignment well by itself.
+	
 * Changed `List` to `Iterable` type in all model field types
 
 	All model field types use union types like `List[<type>] | <type>`; this allows multiple predicate assignment (which otherwise wouldn't be possible with argument initialization in a model, since keyword arguments obviously mustn't repeat); `Iterable` imo is a more general (i.e. better) choice here.
+Note that this requires an origin check in `to_triples`.
 	
 * Merged `AbstractBaseModel` and `RDFBaseModel` and moved to `rdfbasemodel` module
 
