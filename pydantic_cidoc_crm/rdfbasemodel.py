@@ -1,14 +1,16 @@
 """Pydantic base model and configuration for RDFBaseModel."""
 
 import abc
-import datetime
-from typing import Any, Union
+from typing import Any, Generator, overload
+from collections.abc import Iterable, MutableMapping
 
 import mapping
 
 from pydantic import BaseModel, Field
 from rdflib import Literal, URIRef, Graph
 from rdflib.namespace import RDF, XSD
+
+_Triple = tuple[URIRef, URIRef, URIRef | Literal]
 
 class NotInMapping(Exception):
     pass
@@ -23,9 +25,9 @@ class RDFBaseModel(BaseModel, abc.ABC):
     Basically this defines an ABC for a strictly subtype-validated field type.
     """
 
-    iri: str = Field(exclude=True, allow_mutation=False)
-    _mapping = mapping.mapping
+    iri: URIRef = Field(exclude=True, allow_mutation=False)
 
+    _mapping: MutableMapping = mapping.mapping
     _graph = Graph()
 
     class Config:
@@ -63,58 +65,71 @@ class RDFBaseModel(BaseModel, abc.ABC):
         yield validator
 
 
-    ## actually this whole method is obsolete; rdflib.Literal already handles conversions
+    @overload
+    def _convert_to_rdf_literal(URIRef) -> URIRef:
+        ...
+
+    @overload
+    def _convert_to_rdf_literal(Any) -> Literal:
+        ...
+
     @staticmethod
-    def _convert_to_rdf_literal(
-        value: Union[URIRef, str, int, float, datetime.date, datetime.datetime]
-    ) -> Literal:
+    def _convert_to_rdf_literal(value: Any | URIRef) -> Literal | URIRef:
+        """Convert Any to an RDF triple component.
+
+        Note that rdflib.Literals already handle conversions and datatype assignments.
+        """
         if isinstance(value, URIRef):
             return value
-        elif isinstance(value, str):
-            return Literal(value)
-        elif isinstance(value, int):
-            return Literal(value, datatype=XSD.int)
-        elif isinstance(value, float):
-            return Literal(value, datetime=XSD.decimal)
-        elif isinstance(value, datetime.date):
-            return Literal(value.isoformat(), datatype=XSD.date)
-        elif isinstance(value, datetime.datetime):
-            return Literal(value.isoformat(), datatype=XSD.dateTime)
-        raise InvalidType(value)
+        return Literal(value)
 
-    def to_triples(self, recursive=True) -> list:
-        triples = [
-            (URIRef(self.iri), RDF.type, URIRef(self._mapping[self.__class__.__name__]))
-        ]
-        for key in self.dict(
-            exclude_unset=True, exclude_none=True, exclude_defaults=True
-        ).keys():
-            values = getattr(self, key)
 
-            if not isinstance(values, list):
+    def to_triples(self, recursive=True) -> Generator[_Triple, None, None]:
+        """Generate triples from a model.
+
+        Recursively constructs a generator of triples (_Triple type).
+        """
+        yield (URIRef(self.iri), RDF.type, URIRef(self._mapping[self.__class__.__name__]))
+
+        _model_dict = self.dict(
+            exclude_unset=True,
+            exclude_none=True,
+            exclude_defaults=True
+        )
+
+        for key, values in _model_dict.items():
+
+            # get value(s)
+            if not isinstance(values, Iterable):
                 values = [values]
 
             for value in values:
-                if isinstance(value, AbstractBaseModel):
+                if isinstance(value, RDFBaseModel):
                     if recursive:
-                        triples.extend(value.to_triples())
+                        value.to_triples()
                     value = URIRef(value.iri)
                 else:
-                    value = self._convert_to_rdf_literal(value)
+                    value = self._convert_to_rdf_term(value)
+
+                # get the predicate
                 try:
                     predicate = URIRef(self._mapping[key])
                 except KeyError:
                     raise NotInMapping(key)
 
-                triples.append((URIRef(self.iri), predicate, value))
+                # construct triple and yield
+                yield (URIRef(self.iri), predicate, value)
 
-        return triples
 
-    def serialize(self) -> str:
-        serialized_triples = set()
-
+    def to_graph(self) -> Graph:
         for triple in self.to_triples():
-            serialized_triples.add(
-                f"{triple[0].n3()} {triple[1].n3()} {triple[2].n3()}"
-            )
-        return " .\n".join(sorted(serialized_triples))
+            self._graph.add(triple)
+
+        return self._graph
+
+    def serialize(*args, **kwargs) -> str:
+        """Proxy for rdflib.Graph.serialize."""
+        if not self._graph:
+            self.to_graph
+
+        return self._graph.serialize(*args, **kwargs)
