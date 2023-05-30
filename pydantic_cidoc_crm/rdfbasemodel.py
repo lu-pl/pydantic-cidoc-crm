@@ -1,7 +1,8 @@
 """Pydantic base model and configuration for RDFBaseModel."""
 
 import abc
-from typing import Any, Generator, overload
+from typing import Any, Generator, overload, Union, get_origin
+import datetime
 from collections.abc import Iterable, MutableMapping
 
 import mapping
@@ -66,15 +67,15 @@ class RDFBaseModel(BaseModel, abc.ABC):
 
 
     @overload
-    def _convert_to_rdf_literal(URIRef) -> URIRef:
+    def _convert_to_rdf_term(URIRef) -> URIRef:
         ...
 
     @overload
-    def _convert_to_rdf_literal(Any) -> Literal:
+    def _convert_to_rdf_term(Any) -> Literal:
         ...
 
     @staticmethod
-    def _convert_to_rdf_literal(value: Any | URIRef) -> Literal | URIRef:
+    def _convert_to_rdf_term(value: Any | URIRef) -> Literal | URIRef:
         """Convert Any to an RDF triple component.
 
         Note that rdflib.Literals already handle conversions and datatype assignments.
@@ -100,7 +101,7 @@ class RDFBaseModel(BaseModel, abc.ABC):
         for key, values in _model_dict.items():
 
             # get value(s)
-            if not isinstance(values, Iterable):
+            if not get_origin(values) is Iterable[RDFBaseModel]:
                 values = [values]
 
             for value in values:
@@ -127,9 +128,7 @@ class RDFBaseModel(BaseModel, abc.ABC):
 
         return self._graph
 
-    def serialize(*args, **kwargs) -> str:
+    def serialize(self, *args, **kwargs) -> str:
         """Proxy for rdflib.Graph.serialize."""
-        if not self._graph:
-            self.to_graph
-
-        return self._graph.serialize(*args, **kwargs)
+        g = self.to_graph()
+        return g.serialize(*args, **kwargs)
