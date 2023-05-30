@@ -8,6 +8,7 @@ This is a fork of [pydantic-cidoc-crm](https://github.com/jonasengelmann/pydanti
 Using [Pydantic](https://docs.pydantic.dev/latest/) for Ontology abstractions in Python is a nifty idea; [...explain]
 
 However `pydantic-cidoc-crm` doesn't utilize `rdflib`'s functioniality to handle graph generation and serialization, which could be considered a serious and unnecessary limitation. 
+Also some general cleanup and basic testing would be beneficial.
   
 ### Changes
 
@@ -32,7 +33,6 @@ Note that this requires an origin check in `to_triples`.
 
     Separation of `AbstractBaseModel` and `RDFBaseModel` seems somewhat motiveless; also I find having `mapping` assigned right in the base class is more concise.
 
-Also some general cleanup and basic testing is provided.
 
 ## License
 
