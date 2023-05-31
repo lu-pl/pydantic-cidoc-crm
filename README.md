@@ -24,10 +24,12 @@ Also some general cleanup and basic testing would be beneficial.
 
     Actually `rdflib.Literal` handles conversions and datatype assignment well by itself.
 	
-* Changed `List` to `Iterable` type in all model field types
+* ~~Changed `List` to `Iterable` type in all model field types
 
 	All model field types use union types like `List[<type>] | <type>`; this allows multiple predicate assignment (which otherwise wouldn't be possible with argument initialization in a model, since keyword arguments obviously mustn't repeat); `Iterable` imo is a more general (i.e. better) choice here.
-Note that this requires an origin check in `to_triples`.
+Note that this requires an origin check in `to_triples`. ~~
+
+This caused a major bug since pydantic auto-sanitizes fields to generators when Iterable is defined in the union type.
 	
 * Merged `AbstractBaseModel` and `RDFBaseModel` and moved to `rdfbasemodel` module
 
