@@ -36,7 +36,7 @@ class X1Corpus(D1DigitalObject, F3Manifestation):
 id_type = cidoc.E55Type(iri="https://types.clscor.io/entity/id")
 
 corpusname_type = cidoc.E55Type(iri="https://types.clscor.io/entity/corpus_name")
-# acrynom_type = cidoc.E55Type(iri="https://types.clscor.io/entity/acronym")
+acrynom_type = cidoc.E55Type(iri="https://types.clscor.io/entity/acronym")
 
 corpus_identifier = cidoc.E42Identifier(
     iri="https://eltec.clscor.io/entity/corpus/id",
@@ -53,19 +53,20 @@ corpus_name = cidoc.E41Appellation(
     p190_has_symbolic_content="English ELTeC Corpus",
     p2_has_type=corpusname_type
 )
+# print(corpus_name.serialize(format="ttl"))
 
-print(corpus_name.serialize(format="ttl"))
+corpus_acronym = cidoc.E41Appellation(
+    iri="https://eltec.clscor.io/entity/corpus/acronym",
+    p190_has_symbolic_content="eltecen",
+    p2_has_type=acrynom_type
+)
 
-# corpus_acronym = cidoc.E41Appellation(
-#     iri="https://eltec.clscor.io/entity/corpus/acronym",
-#     p190_has_symbolic_content="eltecen",
-#     p2_has_type=acrynom_type
-# )
+eltec_en_corpus = X1Corpus(
+    iri="https://eltec.clscor.io/entity/corpus",
+    p1_is_identified_by=[corpus_identifier, corpus_name],
+)
 
-# eltec_en_corpus = X1Corpus(
-#     iri="https://eltec.clscor.io/entity/corpus",
-#     p1_is_identified_by=[corpus_identifier, corpus_name],
-# )
+print(eltec_en_corpus.serialize(format="ttl"))
 
 ## this doesn't work on initial run with fresh interpreter
 # print(eltec_en_corpus.serialize(format="ttl"))
