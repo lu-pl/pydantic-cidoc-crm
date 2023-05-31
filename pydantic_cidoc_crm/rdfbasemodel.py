@@ -105,7 +105,7 @@ class RDFBaseModel(BaseModel, abc.ABC):
                 values = [values]
 
             for value in values:
-                if isinstance(value, RDFBaseModel):
+                if isinstance(value, Generator):
                     if recursive:
                         value.to_triples()
                     value = URIRef(value.iri)
