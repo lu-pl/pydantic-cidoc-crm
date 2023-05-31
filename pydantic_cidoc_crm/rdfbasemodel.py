@@ -65,7 +65,6 @@ class RDFBaseModel(BaseModel, abc.ABC):
 
         yield validator
 
-
     @overload
     def _convert_to_rdf_term(URIRef) -> URIRef:
         ...
@@ -84,35 +83,34 @@ class RDFBaseModel(BaseModel, abc.ABC):
             return value
         return Literal(value)
 
-
-    def to_triples(self, recursive=True) -> Generator[_Triple, None, None]:
+    def to_triples(self) -> Generator[_Triple, None, None]:
         """Generate triples from a model.
 
         Recursively constructs a generator of triples (_Triple type).
         """
         yield (URIRef(self.iri), RDF.type, URIRef(self._mapping[self.__class__.__name__]))
 
-        _model_dict = self.dict(
-            exclude_unset=True,
-            exclude_none=True,
-            exclude_defaults=True
-        )
+        _model_dict = {
+            key: value for key, value
+            in dict(self).items()
+            if value and key != "iri"
+        }
 
         for key, values in _model_dict.items():
 
-            # get value(s)
-            if not get_origin(values) is Iterable[RDFBaseModel]:
+            # ensure list for multiple assignment
+            if not isinstance(values, list):
                 values = [values]
 
+            # get object(s)
             for value in values:
-                if isinstance(value, Generator):
-                    if recursive:
-                        value.to_triples()
+                if isinstance(value, RDFBaseModel):
+                    yield from value.to_triples()
                     value = URIRef(value.iri)
                 else:
                     value = self._convert_to_rdf_term(value)
 
-                # get the predicate
+                # get predicate
                 try:
                     predicate = URIRef(self._mapping[key])
                 except KeyError:
@@ -120,7 +118,6 @@ class RDFBaseModel(BaseModel, abc.ABC):
 
                 # construct triple and yield
                 yield (URIRef(self.iri), predicate, value)
-
 
     def to_graph(self) -> Graph:
         for triple in self.to_triples():
