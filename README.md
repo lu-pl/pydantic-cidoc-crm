@@ -16,7 +16,7 @@ Also some general cleanup and basic testing would be beneficial.
 
 * Refactored `RDFBaseModel.to_triples`
 
-    `RDFBaseModel.to_triples` is now a recursive *generator*, i.e. lazy. Generated triples are no longer (C-style) appended to a list, but yielded.
+    `RDFBaseModel.to_triples` is now a *recursive generator*. Generated triples are no longer (C-style) appended to a list, but lazily yielded.
 	
 * Refactored `RDFBaseModel.serialize`
 
