@@ -88,7 +88,11 @@ class RDFBaseModel(BaseModel, abc.ABC):
 
         Recursively constructs a generator of triples (_Triple type).
         """
-        yield (URIRef(self.iri), RDF.type, URIRef(self._mapping[self.__class__.__name__]))
+        yield (
+            URIRef(self.iri),
+            RDF.type,
+            URIRef(self._mapping[self.__class__.__name__])
+        )
 
         _model_dict = {
             key: value for key, value
