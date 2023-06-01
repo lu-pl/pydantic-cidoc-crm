@@ -13,8 +13,10 @@ from rdflib.namespace import RDF, XSD
 
 _Triple = tuple[URIRef, URIRef, URIRef | Literal]
 
+
 class NotInMapping(Exception):
     pass
+
 
 class InvalidType(Exception):
     pass
@@ -61,7 +63,8 @@ class RDFBaseModel(BaseModel, abc.ABC):
         def validator(v: Any):
             if isinstance(v, cls):
                 return v
-            raise ValueError(f"Domain must be '{cls.__name__}' or a subclass of it.")
+            raise ValueError(
+                f"Domain must be '{cls.__name__}' or a subclass of it.")
 
         yield validator
 
@@ -124,6 +127,7 @@ class RDFBaseModel(BaseModel, abc.ABC):
                 yield (URIRef(self.iri), predicate, value)
 
     def to_graph(self) -> Graph:
+        """Iterate over triple generator and add triples to graph component."""
         for triple in self.to_triples():
             self._graph.add(triple)
 
