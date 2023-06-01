@@ -5,7 +5,9 @@ This is a fork of [pydantic-cidoc-crm](https://github.com/jonasengelmann/pydanti
 
 ## Rationale
 
-Using [Pydantic](https://docs.pydantic.dev/latest/) for Ontology abstractions in Python is a nifty idea; [...explain]
+Using [Pydantic](https://docs.pydantic.dev/latest/) for Ontology abstractions in Python is a nifty idea;
+leveraging Pydantic's powerful data modelling and validation functionality, OWL relationships can be expressed as Pydantic models simply by the use of Python type hints and plain subtyping.
+Apart from being elegant and concise, this approach also ...
 
 However `pydantic-cidoc-crm` doesn't utilize `rdflib`'s functioniality to handle graph generation and serialization, which could be considered a serious and unnecessary limitation. 
 Also some general cleanup and basic testing would be beneficial.
