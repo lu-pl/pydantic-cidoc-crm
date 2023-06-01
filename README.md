@@ -7,7 +7,7 @@ This is a fork of [pydantic-cidoc-crm](https://github.com/jonasengelmann/pydanti
 
 Using [Pydantic](https://docs.pydantic.dev/latest/) for Ontology abstractions in Python is a nifty idea;
 leveraging Pydantic's powerful data modelling and validation functionality, OWL relationships can be expressed as Pydantic models simply by the use of Python type hints and plain subtyping.
-Apart from being elegant and concise, this approach also ...
+This approach is not only elegant and concise, but also makes available the full might of Pydantic for Ontology mappings, e.g. one can easily derive JSON Schema from a Pydantic Ontology model.
 
 However `pydantic-cidoc-crm` doesn't utilize `rdflib`'s functioniality to handle graph generation and serialization, which could be considered a serious and unnecessary limitation. 
 Also some general cleanup and basic testing would be beneficial.
@@ -20,7 +20,7 @@ Also some general cleanup and basic testing would be beneficial.
 	
 * Refactored `RDFBaseModel.serialize`
 
-    `RDFBaseModel.serialize` is now an `rdflib.Graph.serialize` proxy that uses an internal `rdflib.Graph` component; this allows for far more powerful serialization funcitonality (see [rdflib.Graph.serialize](https://rdflib.readthedocs.io/en/stable/apidocs/rdflib.html#rdflib.graph.Graph.serialize)).
+    `RDFBaseModel.serialize` is now an `rdflib.Graph.serialize` proxy that uses an internal `rdflib.Graph` component; this allows for far more powerful serialization functionality (see [rdflib.Graph.serialize](https://rdflib.readthedocs.io/en/stable/apidocs/rdflib.html#rdflib.graph.Graph.serialize)).
 	
 * Simplified `_convert_to_rdf_literl`
 
