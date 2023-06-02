@@ -62,5 +62,8 @@ eltec_en_corpus = X1Corpus(
     p1_is_identified_by=[corpus_identifier, corpus_name],
 )
 
+
+g = eltec_en_corpus.to_graph()
+
 print(eltec_en_corpus.serialize(format="ttl"))
-print(eltec_en_corpus.serialize(format="xml"))
+# print(eltec_en_corpus.serialize(format="xml"))
